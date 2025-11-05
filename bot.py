@@ -22,6 +22,11 @@ bot_key = '8366770160:AAFosaiKzpT2O2i2-p8Bxr4SdV8Lg4xfrEY'
 url = f"https://api.telegram.org/bot{bot_key}/"  # don't forget to change the token!
 
 
+jokes = [
+    "tung tung tung sahur",
+    "balerinacapuchino'",
+    "chimpanzini bananini" ]
+
 
 def last_update(request):
     response = requests.get(request + 'getUpdates')
@@ -54,27 +59,48 @@ def main():
     try:
         update_id = last_update(url)['update_id']
         while True:
-            # pythonanywhere
             time.sleep(3)
             update = last_update(url)
             if update_id == update['update_id']:
-                if get_message_text(update).lower() == 'hi' or get_message_text(
-                        update).lower() == 'hello' or get_message_text(update).lower() == 'hey':
-                    send_message(get_chat_id(update), 'Greetings! Type "Dice" to roll the dice!')
-                elif get_message_text(update).lower() == 'qa24':
+
+
+                message_text = get_message_text(update).lower()
+
+                if message_text == 'hi' or message_text == 'hello' or message_text == 'hey':
+
+                    send_message(get_chat_id(update), 'Greetings! Type "dice", "coin", "time" or "joke"!')
+
+                elif message_text == 'qa24':
                     send_message(get_chat_id(update), 'Python')
-                elif get_message_text(update).lower() == 'gin':
+
+                elif message_text == 'gin':
                     send_message(get_chat_id(update), 'Finish')
                     break
-                elif get_message_text(update).lower() == 'python':
+
+                elif message_text == 'python':
                     send_message(get_chat_id(update), 'version 3.10')
-                elif get_message_text(update).lower() == 'dice':
+
+                elif message_text == 'dice':
                     _1 = random.randint(1, 6)
                     _2 = random.randint(1, 6)
                     send_message(get_chat_id(update),
                                  'You have ' + str(_1) + ' and ' + str(_2) + '!\nYour result is ' + str(_1 + _2) + '!')
+
+                elif message_text == 'coin':
+                    result = random.choice(['Orel', 'Reshka'])
+                    send_message(get_chat_id(update), 'Result: ' + result)
+
+                elif message_text == 'time':
+                    current_time = time.ctime()
+                    send_message(get_chat_id(update), 'Time now: ' + current_time)
+
+                elif message_text == 'joke':
+                    joke = random.choice(jokes)
+                    send_message(get_chat_id(update), joke)
+
                 else:
                     send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
+
                 update_id += 1
     except KeyboardInterrupt:
         print('\nБот зупинено')
