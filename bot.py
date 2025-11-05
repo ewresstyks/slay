@@ -16,8 +16,10 @@ from dotenv import load_dotenv
 load_dotenv()
 bot_token = os.getenv("TOKEN")
 
-
 url = f"https://api.telegram.org/bot{bot_token}/"  # don't forget to change the token!
+bot_key = '8366770160:AAFosaiKzpT2O2i2-p8Bxr4SdV8Lg4xfrEY'
+
+url = f"https://api.telegram.org/bot{bot_key}/"  # don't forget to change the token!
 
 
 def last_update(request):
