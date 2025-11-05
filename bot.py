@@ -22,6 +22,7 @@ bot_key = '8366770160:AAFosaiKzpT2O2i2-p8Bxr4SdV8Lg4xfrEY'
 url = f"https://api.telegram.org/bot{bot_key}/"  # don't forget to change the token!
 
 
+
 def last_update(request):
     response = requests.get(request + 'getUpdates')
     # TODO: Uncomment just for local testing
