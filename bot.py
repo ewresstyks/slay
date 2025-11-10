@@ -13,6 +13,7 @@ import requests
 import random
 import os
 from dotenv import load_dotenv
+from calculator import calculate_expression
 load_dotenv()
 bot_token = os.getenv("TOKEN")
 
@@ -99,7 +100,12 @@ def main():
                     send_message(get_chat_id(update), joke)
 
                 else:
-                    send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
+                    result = calculate_expression(get_message_text(update))
+                    if result is not None:
+                        send_message(get_chat_id(update), result)
+
+                    else:
+                        send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
 
                 update_id += 1
     except KeyboardInterrupt:
