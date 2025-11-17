@@ -95,6 +95,7 @@ def main():
                     result = random.choice(['Orel', 'Reshka'])
                     send_message(get_chat_id(update), 'Result: ' + result)
 
+
                 elif message_text == 'time':
                     current_time = time.ctime()
                     send_message(get_chat_id(update), 'Time now: ' + current_time)

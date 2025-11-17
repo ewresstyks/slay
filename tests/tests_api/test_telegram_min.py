@@ -21,6 +21,7 @@ def test_receive_last_update_from_telegram(monkeypatch):
     }
     called = {"url": None}
 
+
     def fake_get(url):
         called["url"] = url
         return _Resp(payload)
