@@ -90,6 +90,7 @@ def main():
                     send_message(get_chat_id(update),
                                  'You have ' + str(_1) + ' and ' + str(_2) + '!\nYour result is ' + str(_1 + _2) + '!')
 
+
                 elif message_text == 'coin':
                     result = random.choice(['Orel', 'Reshka'])
                     send_message(get_chat_id(update), 'Result: ' + result)
