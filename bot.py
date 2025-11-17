@@ -17,11 +17,14 @@ from calculator import calculate_expression
 load_dotenv()
 bot_token = os.getenv("TOKEN")
 
-url = f"https://api.telegram.org/bot{bot_token}/"  # don't forget to change the token!
-bot_key = '8366770160:AAFosaiKzpT2O2i2-p8Bxr4SdV8Lg4xfrEY'
+# url = f"https://api.telegram.org/bot{bot_token}/"  # don't forget to change the token!
+# bot_key = '8366770160:AAFosaiKzpT2O2i2-p8Bxr4SdV8Lg4xfrEY'
+#
+# url = f"https://api.telegram.org/bot{bot_key}/"  # don't forget to change the token!
 
-url = f"https://api.telegram.org/bot{bot_key}/"  # don't forget to change the token!
-
+bot_key = os.getenv("TOKEN")
+URL = os.getenv("URL")
+url = f"{URL}{bot_key}"
 
 jokes = [
     "tung tung tung sahur",
