@@ -112,15 +112,14 @@ def main():
                     else:
                         send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
 
-                else:
-
+            else:
                 result = calculate_expression(get_message_text(update))
                 if result is not None:
                     send_message(get_chat_id(update), result)
 
-            else:
-                send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
-                update_id += 1
+                else:
+                    send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
+                    update_id += 1
     except KeyboardInterrupt:
         print('\nБот зупинено')
 
