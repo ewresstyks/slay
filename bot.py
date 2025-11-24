@@ -63,7 +63,6 @@ def main():
             update = last_update(url)
             if update_id == update['update_id']:
 
-
                 message_text = get_message_text(update).lower()
 
                 if message_text == 'hi' or message_text == 'hello' or message_text == 'hey':
@@ -96,6 +95,11 @@ def main():
                     current_time = time.ctime()
                     send_message(get_chat_id(update), 'Time now: ' + current_time)
 
+                elif 'weather' in get_message_text(update).lower():
+                    city = get_message_text(update).lower().replace('weather ', '')
+                    weather = get_weather(city)
+                    send_message(get_chat_id(update), weather)
+
                 elif message_text == 'joke':
                     joke = random.choice(jokes)
                     send_message(get_chat_id(update), joke)
@@ -108,6 +112,14 @@ def main():
                     else:
                         send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
 
+                else:
+
+                result = calculate_expression(get_message_text(update))
+                if result is not None:
+                    send_message(get_chat_id(update), result)
+
+            else:
+                send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
                 update_id += 1
     except KeyboardInterrupt:
         print('\nБот зупинено')
