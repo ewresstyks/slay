@@ -13,13 +13,14 @@ import requests
 import random
 import os
 from dotenv import load_dotenv
-from calculator import calculate_expression
+from commands.calculator import calculate_expression
+from commands.weather import get_weather
 load_dotenv()
 bot_token = os.getenv("TOKEN")
 
 bot_key = os.getenv("TOKEN")
 URL = os.getenv("URL")
-url = f"{URL}{bot_key}"
+url = f"{URL}{bot_key}/"
 
 jokes = [
     "tung tung tung sahur",
@@ -32,7 +33,7 @@ def last_update(request):
     # TODO: Uncomment just for local testing
     # print(response)
     response = response.json()
-    # print(response)
+    print(response)
     results = response['result']
     total_updates = len(results) - 1
     return results[total_updates]
