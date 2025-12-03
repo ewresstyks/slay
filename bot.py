@@ -1,132 +1,110 @@
-# 1
-# python.exe -m pip install --upgrade pip
-# or
-# pip install --upgrade pip
-
-# 2
-# python.exe -m pip install -r requirements.txt
-# or
-# pip install -r requirements.txt
-
 import time
 import requests
 import random
-import os
-from dotenv import load_dotenv
+import datetime
 from commands.calculator import calculate_expression
 from commands.weather import get_weather
+import os
+from dotenv import load_dotenv
+
 load_dotenv()
-bot_token = os.getenv("TOKEN")
 
 bot_key = os.getenv("TOKEN")
 URL = os.getenv("URL")
 url = f"{URL}{bot_key}/"
 
-jokes = [
-    "tung tung tung sahur",
-    "balerinacapuchino'",
-    "chimpanzini bananini" ]
+class Bot:
+    COMMANDS = {'hi','hello','hey',
+                'csc31',
+                'gin',
+                'python',
+                'dice',
+                'weather'}
 
+    def __init__(self, token, url):
+        self.token = token
+        self.url = url
 
-def last_update(request):
-    response = requests.get(request + 'getUpdates')
-    # TODO: Uncomment just for local testing
-    # print(response)
-    response = response.json()
-    print(response)
-    results = response['result']
-    total_updates = len(results) - 1
-    return results[total_updates]
+    def _last_update(self, request):
+        response = requests.get(request + 'getUpdates')
 
+        # print(response)
+        response = response.json()
+        print(response)
+        results = response['result']
+        total_updates = len(results) - 1
+        return results[total_updates]
 
-def get_chat_id(update):
-    chat_id = update['message']['chat']['id']
-    return chat_id
+    def _get_chat_id(self, update):
+        chat_id = update['message']['chat']['id']
+        return chat_id
 
+    def _get_message_text(self, update):
+        message_text = update['message']['text']
+        return message_text
 
-def get_message_text(update):
-    message_text = update['message']['text']
-    return message_text
+    def _send_message(self, chat, text):
+        params = {'chat_id': chat, 'text': text}
+        response = requests.post(url + 'sendMessage', data=params)
+        return response
 
+    def run(self):
+        try:
+            update_id = self._last_update(url)['update_id']
+            while True:
+                # pythonanywhere
+                time.sleep(1)
+                self.update = self._last_update(url)
+                if update_id <= self.update['update_id']:
+                    if self._get_message_text(self.update).lower() == 'hi' or self._get_message_text(
+                            self.update).lower() == 'hello' or self._get_message_text(self.update).lower() == 'hey':
+                        self._send_message(self._get_chat_id(self.update), 'Greetings! Type "Dice" to roll the dice!')
+                    elif self._get_message_text(self.update).lower() == 'csc31':
+                        self._send_message(self._get_chat_id(self.update), 'Python')
+                    elif self._get_message_text(self.update).lower() == 'gin':
+                        self._send_message(self._get_chat_id(self.update), 'Finish')
+                        break
+                    elif self._get_message_text(self.update).lower() == 'python':
+                        self._send_message(self._get_chat_id(self.update), 'version 3.10')
 
-def send_message(chat, text):
-    params = {'chat_id': chat, 'text': text}
-    response = requests.post(url + 'sendMessage', data=params)
-    return response
+                    elif self._get_message_text(self.update).lower() == 'time':
+                        now = datetime.datetime.now().strftime("%H:%M:%S")
+                        self._send_message(self._get_chat_id(self.update), f"Current time: {now}")
 
+                    elif self._get_message_text(self.update).lower().startswith('reverse '):
+                        text = self._get_message_text(self.update)[8:]
+                        self._send_message(self._get_chat_id(self.update), text[::-1])
 
-def main():
-    try:
-        update_id = last_update(url)['update_id']
-        while True:
-            time.sleep(3)
-            update = last_update(url)
-            if update_id == update['update_id']:
-
-                message_text = get_message_text(update).lower()
-
-                if message_text == 'hi' or message_text == 'hello' or message_text == 'hey':
-
-                    send_message(get_chat_id(update), 'Greetings! Type "dice", "coin", "time" or "joke"!')
-
-                elif message_text == 'qa24':
-                    send_message(get_chat_id(update), 'Python')
-
-                elif message_text == 'gin':
-                    send_message(get_chat_id(update), 'Finish')
-                    break
-
-                elif message_text == 'python':
-                    send_message(get_chat_id(update), 'version 3.10')
-
-                elif message_text == 'dice':
-                    _1 = random.randint(1, 6)
-                    _2 = random.randint(1, 6)
-                    send_message(get_chat_id(update),
-                                 'You have ' + str(_1) + ' and ' + str(_2) + '!\nYour result is ' + str(_1 + _2) + '!')
-
-
-                elif message_text == 'coin':
-                    result = random.choice(['Orel', 'Reshka'])
-                    send_message(get_chat_id(update), 'Result: ' + result)
-
-
-                elif message_text == 'time':
-                    current_time = time.ctime()
-                    send_message(get_chat_id(update), 'Time now: ' + current_time)
-
-                elif 'weather' in get_message_text(update).lower():
-                    city = get_message_text(update).lower().replace('weather ', '')
-                    weather = get_weather(city)
-                    send_message(get_chat_id(update), weather)
-
-                elif message_text == 'joke':
-                    joke = random.choice(jokes)
-                    send_message(get_chat_id(update), joke)
-
-                else:
-                    result = calculate_expression(get_message_text(update))
-                    if result is not None:
-                        send_message(get_chat_id(update), result)
-
+                    elif self._get_message_text(self.update).lower().startswith('sum '):
+                        try:
+                            numbers = list(map(int, self._get_message_text(self.update)[4:].split()))
+                            self._send_message(self._get_chat_id(self.update), f"Sum = {sum(numbers)}")
+                        except ValueError:
+                            self._send_message(self._get_chat_id(self.update), "Give me numbers only!")
+                    # from weather import get_weather
+                    elif 'weather' in self._get_message_text(self.update).lower():
+                        city = self._get_message_text(self.update).lower().replace('weather ', '')
+                        weather = get_weather(city)
+                        self._send_message(self._get_chat_id(self.update), weather)
+                    elif self._get_message_text(self.update).lower() == 'dice':
+                        _1 = random.randint(1, 6)
+                        _2 = random.randint(1, 6)
+                        self._send_message(self._get_chat_id(self.update),
+                                     'You have ' + str(_1) + ' and ' + str(_2) + '!\nYour result is ' + str(
+                                         _1 + _2) + '!')
                     else:
-                        send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
+                        result = calculate_expression(self._get_message_text(self.update))
+                        if result is not None:
+                            self._send_message(self._get_chat_id(self.update), result)
+                        else:
+                            self._send_message(self._get_chat_id(self.update), 'Sorry, I don\'t understand you :(')
 
-            else:
-                result = calculate_expression(get_message_text(update))
-                if result is not None:
-                    send_message(get_chat_id(update), result)
-
-                else:
-                    send_message(get_chat_id(update), 'Sorry, I don\'t understand you :(')
                     update_id += 1
-    except KeyboardInterrupt:
-        print('\nБот зупинено')
+        except KeyboardInterrupt:
+            print('\nБот зупинено')
 
 
-# print(__name__)
+
 if __name__ == '__main__':
-    main()
-
-
-
+    bot = Bot(bot_key, url)
+    bot.run()
